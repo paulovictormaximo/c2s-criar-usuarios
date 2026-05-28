@@ -480,8 +480,20 @@
   const WEBHOOK_URL = "https://n8n.vetraia.com/webhook/c2s-criar-usuarios";
 
   const USUARIOS = {
-    "admin": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
-  };
+  "admin": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+
+  "matheus": "a8a39b89da145d0247b62bb28442c6af1ef01d2bb4f1b9f9f30894e4c6f13c68",
+
+  "roberto": "a1c01647dac15358ef75527e0772ae0356a44a33c4b5adcd6dfc7522dffb22bf",
+
+  "rodrigo": "b95d9ca25855a87f9e30d4782901be0117a9b3f8e5cf8112b1b84d6f985cb74b",
+
+  "guilherme": "8f302d5b8acfa4b6156f65bc0dd10977888daf54b83f865fd463db197055ce48",
+
+  "gabriel": "4d94829ae0034c76a5274e348cc46480c7fe4166cf3ec60cacd7b1234006b461",
+
+  "mario": "cfbc6ee7f411ccbcfa2f75ee58945919f3f1551b5188c1acb036826495d85330"
+};
 
   let relatorioAtual = null;
 
@@ -499,7 +511,7 @@
 
   // ── Login ──
   async function fazerLogin() {
-    const user = document.getElementById("login-user").value.trim();
+    const user = document.getElementById("login-user").value.trim().toLowerCase();
     const pass = document.getElementById("login-pass").value;
 
     document.getElementById("login-user").classList.remove("error");
