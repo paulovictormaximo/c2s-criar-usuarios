@@ -140,13 +140,11 @@
       <div class="step-dot"></div>
     </div>
 
-    <!-- Abas de modo -->
     <div class="modo-tabs">
       <button class="modo-tab active" onclick="trocarModo('planilha')">📄 Planilha</button>
       <button class="modo-tab" onclick="trocarModo('texto')">💬 Colar conversa</button>
     </div>
 
-    <!-- Modo planilha -->
     <div id="modo-planilha">
       <div class="upload-zone" id="upload-zone">
         <input type="file" id="file-input" accept=".csv,.xls,.xlsx" onchange="arquivoSelecionado(this)">
@@ -158,7 +156,6 @@
       </div>
     </div>
 
-    <!-- Modo texto -->
     <div id="modo-texto" style="display:none;">
       <div class="field">
         <label for="texto-conversa">Cole a conversa do WhatsApp aqui</label>
@@ -209,6 +206,7 @@
 <script>
   const WEBHOOK_PLANILHA = "https://n8n.vetraia.com/webhook/c2s-criar-usuarios";
   const WEBHOOK_TEXTO    = "https://n8n.vetraia.com/webhook/c2s-interpretar-texto";
+  const WEBHOOK_EMPRESA  = "https://n8n.vetraia.com/webhook/c2s-buscar-empresa";
 
   const USUARIOS = {
     "admin":     "325d8eea60b3081478a9195a828d9c4c6744756ff4c64180f28d327e7e38e2e0",
@@ -284,8 +282,10 @@
     btn.innerHTML = '<span class="spinner"></span>Validando…';
 
     try {
-      const resp = await fetch("https://api.contact2sale.com/integration/me", {
-        headers: { "Authorization": "Bearer " + val }
+      const resp = await fetch(WEBHOOK_EMPRESA, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: val })
       });
 
       if (!resp.ok) throw new Error("Token inválido");
@@ -294,13 +294,8 @@
       tokenAtual = val;
       empresaAtual = data;
 
-      const filiais = (data.sub_companies || [])
-        .filter(s => s.company_id !== data.company_id)
-        .map(s => s.company_name)
-        .join(", ");
-
       document.getElementById("label-empresa").textContent = data.company_name;
-      document.getElementById("label-filiais").textContent = filiais ? `Filiais: ${filiais}` : "";
+      document.getElementById("label-filiais").textContent = data.filiais && data.filiais.length > 0 ? `Filiais: ${data.filiais.join(", ")}` : "";
 
       irPara("screen-upload");
 
