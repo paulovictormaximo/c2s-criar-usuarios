@@ -58,8 +58,7 @@
     .msg.error   { background: var(--error-bg);   color: var(--error);   border: 1px solid #FECACA; }
     .msg.success { background: var(--success-bg); color: var(--success); border: 1px solid #BBF7D0; }
     .msg.info    { background: var(--blue-light);  color: var(--blue);    border: 1px solid #BFDBFE; }
-    .token-preview { font-family: 'DM Mono', monospace; font-size: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; color: var(--muted); margin-top: 8px; word-break: break-all; display: none; }
-    .upload-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+    .upload-footer { display: flex; flex-direction: column; gap: 2px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 13px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
     .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
@@ -122,7 +121,7 @@
     <div class="field">
       <label for="token-input">Token</label>
       <input type="text" id="token-input" placeholder="Cole ou digite o token aqui" autocomplete="off" spellcheck="false">
-      </div>
+    </div>
     <div class="msg error" id="msg-token"></div>
     <button class="btn" onclick="confirmarToken()">Continuar</button>
   </div>
@@ -172,7 +171,8 @@
     <div class="msg info"  id="msg-enviando"></div>
     <button class="btn" id="btn-enviar" onclick="enviar()">Enviar</button>
     <div class="upload-footer">
-      <span>Token: <span id="label-token" style="font-family:'DM Mono',monospace; font-size:11px; color: var(--blue);">—</span></span>
+      <span id="label-empresa" style="font-weight:500; color: var(--text);"></span>
+      <span id="label-filiais" style="font-size:11px; color: var(--muted);"></span>
     </div>
   </div>
 </div>
@@ -224,6 +224,7 @@
   let modoAtual = 'planilha';
   let tokenAtual = "";
   let arquivoAtual = null;
+  let empresaAtual = null;
 
   async function hashSenha(senha) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(senha));
@@ -267,20 +268,49 @@
   document.getElementById("login-pass").addEventListener("keydown", e => { if (e.key === "Enter") fazerLogin(); });
   document.getElementById("login-user").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("login-pass").focus(); });
 
-  
-
-  function confirmarToken() {
+  async function confirmarToken() {
     const val = document.getElementById("token-input").value.trim();
     document.getElementById("token-input").classList.remove("error");
     document.getElementById("msg-token").classList.remove("show");
+
     if (!val) {
       document.getElementById("token-input").classList.add("error");
       mostrarMsg("msg-token", "error", "Informe o token da empresa antes de continuar.");
       return;
     }
-    tokenAtual = val;
-    document.getElementById("label-token").textContent = val.length > 18 ? val.slice(0, 16) + "…" : val;
-    irPara("screen-upload");
+
+    const btn = document.querySelector("#screen-token .btn");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Validando…';
+
+    try {
+      const resp = await fetch("https://api.contact2sale.com/integration/me", {
+        headers: { "Authorization": "Bearer " + val }
+      });
+
+      if (!resp.ok) throw new Error("Token inválido");
+
+      const data = await resp.json();
+      tokenAtual = val;
+      empresaAtual = data;
+
+      const filiais = (data.sub_companies || [])
+        .filter(s => s.company_id !== data.company_id)
+        .map(s => s.company_name)
+        .join(", ");
+
+      document.getElementById("label-empresa").textContent = data.company_name;
+      document.getElementById("label-filiais").textContent = filiais ? `Filiais: ${filiais}` : "";
+
+      irPara("screen-upload");
+
+    } catch (err) {
+      document.getElementById("token-input").classList.add("error");
+      mostrarMsg("msg-token", "error", "Token inválido. Verifique e tente novamente.");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = "Continuar";
+    }
   }
 
   document.getElementById("token-input").addEventListener("keydown", e => { if (e.key === "Enter") confirmarToken(); });
@@ -437,4 +467,3 @@
 </script>
 </body>
 </html>
-
