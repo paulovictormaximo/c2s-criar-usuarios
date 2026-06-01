@@ -295,7 +295,11 @@
       empresaAtual = data;
 
       document.getElementById("label-empresa").textContent = data.company_name;
-      document.getElementById("label-filiais").textContent = data.filiais && data.filiais.length > 0 ? `Filiais: ${data.filiais.join(", ")}` : "";
+      if (data.filiais && data.filiais.length > 0) {
+  document.getElementById("label-filiais").innerHTML = "Filiais:<br>" + data.filiais.join("<br>");
+} else {
+  document.getElementById("label-filiais").textContent = "";
+}
 
       irPara("screen-upload");
 
