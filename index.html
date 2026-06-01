@@ -295,12 +295,11 @@
       empresaAtual = data;
 
       document.getElementById("label-empresa").textContent = data.company_name;
-if (data.filiais && data.filiais.length > 0) {
-  document.getElementById("label-filiais").innerHTML = "Equipes:<br>" + data.filiais.join("<br>");
-} else {
-  document.getElementById("label-filiais").textContent = "";
-}
-}
+      if (data.filiais && data.filiais.length > 0) {
+        document.getElementById("label-filiais").innerHTML = "Equipes:<br>" + data.filiais.join("<br>");
+      } else {
+        document.getElementById("label-filiais").textContent = "";
+      }
 
       irPara("screen-upload");
 
