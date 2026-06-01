@@ -121,9 +121,8 @@
     </div>
     <div class="field">
       <label for="token-input">Token</label>
-      <input type="text" id="token-input" placeholder="Cole ou digite o token aqui" oninput="previewToken(this.value)" autocomplete="off" spellcheck="false">
-      <div class="token-preview" id="token-preview"></div>
-    </div>
+      <input type="text" id="token-input" placeholder="Cole ou digite o token aqui" autocomplete="off" spellcheck="false">
+      </div>
     <div class="msg error" id="msg-token"></div>
     <button class="btn" onclick="confirmarToken()">Continuar</button>
   </div>
@@ -268,11 +267,7 @@
   document.getElementById("login-pass").addEventListener("keydown", e => { if (e.key === "Enter") fazerLogin(); });
   document.getElementById("login-user").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("login-pass").focus(); });
 
-  function previewToken(val) {
-    const preview = document.getElementById("token-preview");
-    if (val.trim().length > 0) { preview.textContent = val.trim(); preview.style.display = "block"; }
-    else { preview.style.display = "none"; }
-  }
+  
 
   function confirmarToken() {
     const val = document.getElementById("token-input").value.trim();
