@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-   <meta charset="UTF-8">
+  <meta charset="UTF-8">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>C2S — Criação de Usuários</title>
@@ -17,6 +17,7 @@
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
     .screen { display: none; width: 100%; max-width: 480px; animation: fadeUp 0.28s ease both; }
     .screen.active { display: block; }
+    .screen.wide { max-width: 620px; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 40px 36px 36px; }
     .logo { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500; color: var(--blue); text-align: center; margin-bottom: 6px; }
@@ -27,13 +28,14 @@
     .step-dot.done { background: var(--blue); opacity: 0.35; }
     .field { margin-bottom: 14px; }
     label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
-    input[type="text"], input[type="password"], textarea {
+    input[type="text"], input[type="password"], textarea, select {
       width: 100%; padding: 10px 13px; border: 1px solid var(--border); border-radius: 8px;
       font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--white);
       outline: none; transition: border-color 0.15s, box-shadow 0.15s;
     }
     textarea { resize: vertical; min-height: 140px; line-height: 1.5; }
-    input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(31,114,234,0.1); }
+    select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748B' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(31,114,234,0.1); }
     input.error { border-color: var(--error); box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
     .upload-zone { border: 1.5px dashed var(--border); border-radius: 8px; padding: 28px 16px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; position: relative; }
     .upload-zone:hover, .upload-zone.drag { border-color: var(--blue); background: var(--blue-light); }
@@ -78,6 +80,22 @@
     .lista-criados { border: 1px solid #BBF7D0; border-radius: 8px; overflow: hidden; max-height: 180px; overflow-y: auto; }
     .criado-item { padding: 8px 13px; border-bottom: 1px solid #D1FAE5; background: var(--success-bg); font-size: 13px; color: var(--success); }
     .criado-item:last-child { border-bottom: none; }
+
+    /* TELA DE REVISÃO */
+    .revisao-header { display: grid; grid-template-columns: 1fr 110px 160px; gap: 8px; padding: 0 13px 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+    .revisao-header span { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .revisao-header span:nth-child(2), .revisao-header span:nth-child(3) { text-align: center; }
+    .revisao-lista { display: flex; flex-direction: column; gap: 6px; max-height: 340px; overflow-y: auto; padding-right: 2px; }
+    .revisao-item { display: grid; grid-template-columns: 1fr 110px 160px; gap: 8px; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 13px; transition: border-color 0.15s; }
+    .revisao-item:hover { border-color: #CBD5E1; }
+    .revisao-info { min-width: 0; }
+    .revisao-nome { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .revisao-email { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .revisao-master { display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .revisao-master input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
+    .revisao-master label { font-size: 12px; color: var(--muted); margin: 0; cursor: pointer; }
+    .revisao-equipe select { font-size: 12px; padding: 6px 28px 6px 10px; }
+    .revisao-count { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 12px; }
   </style>
 </head>
 <body>
@@ -89,6 +107,7 @@
     <p class="card-title">Criação de Usuários</p>
     <div class="steps">
       <div class="step-dot active"></div>
+      <div class="step-dot"></div>
       <div class="step-dot"></div>
       <div class="step-dot"></div>
       <div class="step-dot"></div>
@@ -117,6 +136,7 @@
       <div class="step-dot active"></div>
       <div class="step-dot"></div>
       <div class="step-dot"></div>
+      <div class="step-dot"></div>
     </div>
     <div class="field">
       <label for="token-input">Token</label>
@@ -138,11 +158,12 @@
       <div class="step-dot done"></div>
       <div class="step-dot active"></div>
       <div class="step-dot"></div>
+      <div class="step-dot"></div>
     </div>
 
     <div class="modo-tabs">
-      <button class="modo-tab active" onclick="trocarModo('planilha')">📄 Planilha</button>
-      <button class="modo-tab" onclick="trocarModo('texto')">💬 Colar conversa</button>
+      <button class="modo-tab active" onclick="trocarModo('planilha', event)">📄 Planilha</button>
+      <button class="modo-tab" onclick="trocarModo('texto', event)">💬 Colar conversa</button>
     </div>
 
     <div id="modo-planilha">
@@ -174,12 +195,41 @@
   </div>
 </div>
 
-<!-- TELA 4 — RELATÓRIO -->
+<!-- TELA 4 — REVISÃO (modo texto) -->
+<div class="screen wide" id="screen-revisao">
+  <div class="card">
+    <button class="btn-back" onclick="irPara('screen-upload')">← Voltar</button>
+    <div class="logo">C2S</div>
+    <p class="card-title">Revisar contatos</p>
+    <div class="steps">
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <div class="revisao-count" id="revisao-count"></div>
+
+    <div class="revisao-header">
+      <span>Contato</span>
+      <span>Master</span>
+      <span>Equipe</span>
+    </div>
+    <div class="revisao-lista" id="revisao-lista"></div>
+
+    <div class="msg error" id="msg-revisao"></div>
+    <button class="btn" id="btn-confirmar" onclick="confirmarRevisao()">Confirmar e criar usuários</button>
+  </div>
+</div>
+
+<!-- TELA 5 — RELATÓRIO -->
 <div class="screen" id="screen-relatorio">
   <div class="card">
     <div class="logo">C2S</div>
     <p class="card-title">Relatório de criação</p>
     <div class="steps">
+      <div class="step-dot done"></div>
       <div class="step-dot done"></div>
       <div class="step-dot done"></div>
       <div class="step-dot done"></div>
@@ -206,6 +256,8 @@
 <script>
   const WEBHOOK_PLANILHA = "https://n8n.vetraia.com/webhook/c2s-criar-usuarios";
   const WEBHOOK_TEXTO    = "https://n8n.vetraia.com/webhook/c2s-interpretar-texto";
+  const WEBHOOK_PREVIEW  = "https://n8n.vetraia.com/webhook/c2s-interpretar-texto-preview";
+  const WEBHOOK_CRIAR_TEXTO = "https://n8n.vetraia.com/webhook/c2s-criar-usuarios-texto";
   const WEBHOOK_EMPRESA  = "https://n8n.vetraia.com/webhook/c2s-buscar-empresa";
 
   const USUARIOS = {
@@ -223,6 +275,7 @@
   let tokenAtual = "";
   let arquivoAtual = null;
   let empresaAtual = null;
+  let contatosRevisao = [];
 
   async function hashSenha(senha) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(senha));
@@ -236,10 +289,10 @@
     void el.offsetWidth;
   }
 
-  function trocarModo(modo) {
+  function trocarModo(modo, event) {
     modoAtual = modo;
     document.querySelectorAll(".modo-tab").forEach(t => t.classList.remove("active"));
-    event.target.classList.add("active");
+    if (event && event.target) event.target.classList.add("active");
     document.getElementById("modo-planilha").style.display = modo === 'planilha' ? 'block' : 'none';
     document.getElementById("modo-texto").style.display    = modo === 'texto'    ? 'block' : 'none';
     limparMsgs();
@@ -296,7 +349,8 @@
 
       document.getElementById("label-empresa").textContent = data.company_name;
       if (data.filiais && data.filiais.length > 0) {
-        document.getElementById("label-filiais").innerHTML = "Equipes:<br>" + data.filiais.join("<br>");
+        const nomes = data.filiais.map(f => typeof f === 'object' ? f.nome : f);
+        document.getElementById("label-filiais").innerHTML = "Equipes:<br>" + nomes.join("<br>");
       } else {
         document.getElementById("label-filiais").textContent = "";
       }
@@ -374,29 +428,130 @@
         btn.disabled = false;
         btn.innerHTML = "Enviar";
       }
+
     } else {
+      // MODO TEXTO — chama preview primeiro
       const texto = document.getElementById("texto-conversa").value.trim();
       if (!texto) { mostrarMsg("msg-upload", "error", "Cole a conversa antes de enviar."); return; }
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span>Interpretando…';
       mostrarMsg("msg-enviando", "info", "A IA está identificando os contatos…");
       try {
-        const response = await fetch(WEBHOOK_TEXTO, {
+        const response = await fetch(WEBHOOK_PREVIEW, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token: tokenAtual, texto }),
         });
         if (!response.ok) throw new Error(`Erro ${response.status}`);
         const data = await response.json();
-        relatorioAtual = data;
-        mostrarRelatorio(data);
+        const contatos = Array.isArray(data) ? data : (data.contatos || []);
+
+        if (contatos.length === 0) {
+          mostrarMsg("msg-upload", "error", "Nenhum contato encontrado no texto. Revise e tente novamente.");
+          return;
+        }
+
+        contatosRevisao = contatos;
+        montarTelaRevisao(contatos);
+        irPara("screen-revisao");
+
       } catch (err) {
         limparMsgs();
-        mostrarMsg("msg-upload", "error", "Falha ao enviar. Verifique sua conexão e tente novamente.");
+        mostrarMsg("msg-upload", "error", "Falha ao interpretar. Verifique sua conexão e tente novamente.");
       } finally {
         btn.disabled = false;
         btn.innerHTML = "Enviar";
       }
+    }
+  }
+
+  function montarTelaRevisao(contatos) {
+    const lista = document.getElementById("revisao-lista");
+    lista.innerHTML = "";
+
+    document.getElementById("revisao-count").textContent =
+      contatos.length === 1 ? "1 contato identificado" : `${contatos.length} contatos identificados`;
+
+    // Monta opções de equipe
+    const opcoesEquipe = [{ nome: empresaAtual.company_name, id: empresaAtual.company_id }];
+    if (empresaAtual.filiais && empresaAtual.filiais.length > 0) {
+      for (const f of empresaAtual.filiais) {
+        if (typeof f === 'object') {
+          opcoesEquipe.push({ nome: f.nome, id: f.id });
+        }
+      }
+    }
+
+    contatos.forEach((c, i) => {
+      const item = document.createElement("div");
+      item.className = "revisao-item";
+
+      // Coluna info
+      const info = document.createElement("div");
+      info.className = "revisao-info";
+      info.innerHTML = `<div class="revisao-nome" title="${c.nome || ''}">${c.nome || '(sem nome)'}</div><div class="revisao-email" title="${c.email || ''}">${c.email || ''}</div>`;
+
+      // Coluna master
+      const masterCol = document.createElement("div");
+      masterCol.className = "revisao-master";
+      const chkId = `master-${i}`;
+      masterCol.innerHTML = `<input type="checkbox" id="${chkId}"><label for="${chkId}">Master</label>`;
+
+      // Coluna equipe
+      const equipeCol = document.createElement("div");
+      equipeCol.className = "revisao-equipe";
+      const sel = document.createElement("select");
+      sel.id = `equipe-${i}`;
+      for (const op of opcoesEquipe) {
+        const opt = document.createElement("option");
+        opt.value = op.id;
+        opt.textContent = op.nome;
+        sel.appendChild(opt);
+      }
+      equipeCol.appendChild(sel);
+
+      item.appendChild(info);
+      item.appendChild(masterCol);
+      item.appendChild(equipeCol);
+      lista.appendChild(item);
+    });
+  }
+
+  async function confirmarRevisao() {
+    const btn = document.getElementById("btn-confirmar");
+    document.getElementById("msg-revisao").classList.remove("show");
+
+    const payload = contatosRevisao.map((c, i) => {
+      const isMaster = document.getElementById(`master-${i}`).checked;
+      const companyId = document.getElementById(`equipe-${i}`).value;
+      return {
+        nome: c.nome,
+        email: c.email,
+        telefone: c.telefone,
+        username: c.email,
+        is_master: isMaster,
+        company_id: companyId,
+      };
+    });
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Criando usuários…';
+
+    try {
+      const response = await fetch(WEBHOOK_CRIAR_TEXTO, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: tokenAtual, contatos: payload }),
+      });
+      if (!response.ok) throw new Error(`Erro ${response.status}`);
+      const data = await response.json();
+      relatorioAtual = data;
+      mostrarRelatorio(data);
+    } catch (err) {
+      mostrarMsg("msg-revisao", "error", "Falha ao criar usuários. Verifique sua conexão e tente novamente.");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = "Confirmar e criar usuários";
     }
   }
 
@@ -449,7 +604,7 @@
     document.getElementById("file-input").value = "";
     document.getElementById("upload-name").style.display = "none";
     document.getElementById("texto-conversa").value = "";
-    arquivoAtual = null; relatorioAtual = null;
+    arquivoAtual = null; relatorioAtual = null; contatosRevisao = [];
     limparMsgs();
     irPara("screen-upload");
   }
