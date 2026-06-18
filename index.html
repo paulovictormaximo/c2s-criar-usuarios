@@ -44,6 +44,17 @@
     .upload-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
     .upload-text strong { color: var(--blue); font-weight: 500; }
     .upload-name { margin-top: 10px; font-size: 13px; font-family: 'DM Mono', monospace; color: var(--blue); font-weight: 500; display: none; }
+
+    .formato-link { font-size: 12px; color: var(--blue); text-align: center; margin-top: 10px; cursor: pointer; font-weight: 500; user-select: none; }
+    .formato-seta { display: inline-block; transition: transform 0.25s ease; margin-right: 4px; }
+    .formato-seta.aberto { transform: rotate(180deg); }
+    .tabela-exemplo { margin-top: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; font-size: 11px; max-height: 0; opacity: 0; transition: max-height 0.3s ease, opacity 0.25s ease, margin-top 0.3s ease; }
+    .tabela-exemplo.show { max-height: 220px; opacity: 1; margin-top: 10px; }
+    .tabela-exemplo table { width: 100%; border-collapse: collapse; }
+    .tabela-exemplo th { background: var(--blue-light); color: var(--blue); font-weight: 600; padding: 6px 8px; text-align: left; font-size: 10px; white-space: nowrap; }
+    .tabela-exemplo td { padding: 6px 8px; border-top: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; white-space: nowrap; }
+    .tabela-exemplo-nota { font-size: 10px; color: var(--muted); padding: 8px 10px; background: var(--bg); border-top: 1px solid var(--border); line-height: 1.5; }
+    .tabela-exemplo-scroll { overflow-x: auto; }
     .modo-tabs { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
     .modo-tab { flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--white); color: var(--muted); border: none; font-family: 'DM Sans', sans-serif; transition: background 0.15s, color 0.15s; }
     .modo-tab.active { background: var(--blue); color: var(--white); }
@@ -175,6 +186,19 @@
         </div>
         <div class="upload-name" id="upload-name"></div>
       </div>
+      <div class="formato-link" onclick="toggleFormato()">
+        <span class="formato-seta" id="formato-seta">▾</span>Ver formato esperado da planilha
+      </div>
+      <div class="tabela-exemplo" id="tabela-exemplo">
+        <div class="tabela-exemplo-scroll">
+          <table>
+            <tr><th>Nome</th><th>Usuário</th><th>Email</th><th>Telefone</th><th>Master</th><th>Equipe</th></tr>
+            <tr><td>Ana Lima</td><td>ana.lima</td><td>ana@empresa.com</td><td>11999990000</td><td>Não</td><td></td></tr>
+            <tr><td>Bruno Reis</td><td>bruno.reis</td><td>bruno@empresa.com</td><td>11988880000</td><td>Sim</td><td>Equipe 1</td></tr>
+          </table>
+        </div>
+        <div class="tabela-exemplo-nota">Master: <strong>Sim</strong> ou <strong>Não</strong>. Equipe: nome completo, ou em branco para a empresa principal.</div>
+      </div>
     </div>
 
     <div id="modo-texto" style="display:none;">
@@ -296,6 +320,11 @@
     document.getElementById("modo-planilha").style.display = modo === 'planilha' ? 'block' : 'none';
     document.getElementById("modo-texto").style.display    = modo === 'texto'    ? 'block' : 'none';
     limparMsgs();
+  }
+
+  function toggleFormato() {
+    document.getElementById("tabela-exemplo").classList.toggle("show");
+    document.getElementById("formato-seta").classList.toggle("aberto");
   }
 
   async function fazerLogin() {
