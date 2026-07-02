@@ -521,7 +521,7 @@
       // Coluna info
       const info = document.createElement("div");
 info.className = "revisao-info";
-info.innerHTML = `<div class="revisao-nome" title="${c.nome || ''}">${c.nome || '(sem nome)'}</div><div class="revisao-email" title="${c.email || ''}">${c.email || ''}</div><div class="revisao-email">${c.telefone || ''}</div>`;
+info.innerHTML = `<div class="revisao-nome" title="${c.nome || ''}">${c.nome || '(sem nome)'}</div><div class="revisao-email" title="${c.email || ''}">${c.email || ''}</div><div class="revisao-email">${(c.telefone || '').replace(/^55/, '')}</div>`;
 
       // Coluna master
       const masterCol = document.createElement("div");
