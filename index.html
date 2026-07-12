@@ -88,11 +88,13 @@
     .falho-nome { font-size: 13px; font-weight: 500; color: var(--text); }
     .falho-email { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--muted); }
     .falho-motivo { font-size: 11px; color: var(--error); margin-top: 2px; }
-    .lista-criados { border: 1px solid #BBF7D0; border-radius: 8px; overflow: hidden; max-height: 180px; overflow-y: auto; }
-    .criado-item { padding: 8px 13px; border-bottom: 1px solid #D1FAE5; background: var(--success-bg); font-size: 13px; color: var(--success); }
-    .criado-item:last-child { border-bottom: none; }
+    .lista-criados { border: 1px solid #BBF7D0; border-radius: 8px; overflow: hidden; max-height: 220px; overflow-y: auto; }
+    .criados-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .criados-table th { background: #DCFCE7; color: var(--success); font-weight: 600; padding: 7px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; position: sticky; top: 0; }
+    .criados-table td { padding: 8px 12px; border-top: 1px solid #D1FAE5; color: var(--text); background: var(--success-bg); font-family: 'DM Mono', monospace; font-size: 12px; }
+    .criados-table tr td:first-child { font-family: 'DM Sans', sans-serif; font-weight: 500; }
 
-    /* TELA DE REVISÃO */
+       /* TELA DE REVISÃO */
     .revisao-header { display: grid; grid-template-columns: 1fr 110px 160px; gap: 8px; padding: 0 13px 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
     .revisao-header span { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
     .revisao-header span:nth-child(2), .revisao-header span:nth-child(3) { text-align: center; }
@@ -611,12 +613,17 @@ info.innerHTML = `
     listaCriados.innerHTML = "";
     if (data.criados && data.criados.length > 0) {
       secaoCriados.style.display = "block";
-      for (const c of data.criados) {
-        const div = document.createElement("div");
-        div.className = "criado-item";
-        div.textContent = `✓ ${c.nome || c.email} — ${c.username_usado}`;
-        listaCriados.appendChild(div);
-      }
+    const table = document.createElement("table");
+    table.className = "criados-table";
+    table.innerHTML = `<thead><tr><th>Nome</th><th>Usuário</th><th>Email</th></tr></thead>`;
+    const tbody = document.createElement("tbody");
+    for (const c of data.criados) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${c.nome || ''}</td><td>${c.username_usado || ''}</td><td>${c.email || ''}</td>`;
+  tbody.appendChild(tr);
+}
+table.appendChild(tbody);
+listaCriados.appendChild(table);
     } else { secaoCriados.style.display = "none"; }
     irPara("screen-relatorio");
   }
