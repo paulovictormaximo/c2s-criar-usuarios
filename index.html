@@ -54,7 +54,6 @@
     .tabela-exemplo th { background: var(--blue-light); color: var(--blue); font-weight: 600; padding: 6px 8px; text-align: left; font-size: 10px; white-space: nowrap; }
     .tabela-exemplo td { padding: 6px 8px; border-top: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; white-space: nowrap; }
     .tabela-exemplo-nota { font-size: 10px; color: var(--muted); padding: 8px 10px; background: var(--bg); border-top: 1px solid var(--border); line-height: 1.5; }
-    .tabela-exemplo-scroll { overflow-x: auto; }
     .modo-tabs { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
     .modo-tab { flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--white); color: var(--muted); border: none; font-family: 'DM Sans', sans-serif; transition: background 0.15s, color 0.15s; }
     .modo-tab.active { background: var(--blue); color: var(--white); }
@@ -88,10 +87,10 @@
     .falho-nome { font-size: 13px; font-weight: 500; color: var(--text); }
     .falho-email { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--muted); }
     .falho-motivo { font-size: 11px; color: var(--error); margin-top: 2px; }
-    .lista-criados { border: 1px solid #BBF7D0; border-radius: 8px; overflow: hidden; max-height: 220px; overflow-y: auto; }
+    .lista-criados { border: 1px solid #BBF7D0; border-radius: 8px; overflow-x: auto; overflow-y: auto; max-height: 220px; }
     .criados-table { width: 100%; border-collapse: collapse; font-size: 12px; }
     .criados-table th { background: #DCFCE7; color: var(--success); font-weight: 600; padding: 7px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; position: sticky; top: 0; }
-    .criados-table td { padding: 8px 12px; border-top: 1px solid #D1FAE5; color: var(--text); background: var(--success-bg); font-family: 'DM Mono', monospace; font-size: 12px; }
+    .criados-table td { padding: 8px 12px; border-top: 1px solid #D1FAE5; color: var(--text); background: var(--success-bg); font-family: 'DM Mono', monospace; font-size: 12px; white-space: nowrap;}
     .criados-table tr td:first-child { font-family: 'DM Sans', sans-serif; font-weight: 500; }
 
        /* TELA DE REVISÃO */
