@@ -528,12 +528,7 @@ info.innerHTML = `
   <div class="revisao-email">${(c.telefone || '').replace(/^55/, '')}</div>
 `;
       // Coluna master
-      const masterCol = document.createElement("div");
-      masterCol.className = "revisao-master";
-      const chkId = `master-${i}`;
-      masterCol.innerHTML = `<input type="checkbox" id="${chkId}"><label for="${chkId}">Master</label>`;
-
-      // Coluna equipe
+     // Coluna equipe
       const equipeCol = document.createElement("div");
       equipeCol.className = "revisao-equipe";
       const sel = document.createElement("select");
@@ -543,6 +538,17 @@ info.innerHTML = `
         opt.value = op.id;
         opt.textContent = op.nome;
         sel.appendChild(opt);
+      }
+      // Pré-seleciona a equipe extraída do texto (match parcial, case-insensitive)
+      const equipeExtraida = (c.equipe || '').trim().toLowerCase();
+      if (equipeExtraida) {
+        const match = opcoesEquipe.find(op => op.nome.toLowerCase().includes(equipeExtraida));
+        if (match) {
+          sel.value = match.id;
+        } else {
+          sel.style.border = "2px solid #e0433d";
+          sel.title = `Equipe "${c.equipe}" identificada no texto, mas não encontrada — confira manualmente.`;
+        }
       }
       equipeCol.appendChild(sel);
 
