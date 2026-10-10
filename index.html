@@ -540,11 +540,18 @@ info.innerHTML = `
       const sel = document.createElement("select");
       sel.id = `equipe-${i}`;
       for (const op of opcoesEquipe) {
-        const opt = document.createElement("option");
-        opt.value = op.id;
-        opt.textContent = op.nome;
-        sel.appendChild(opt);
-      }
+  const opt = document.createElement("option");
+  opt.value = op.id;
+  opt.textContent = op.nome;
+  sel.appendChild(opt);
+}
+
+// Pré-seleciona equipe se vier do GPT
+if (c.equipe) {
+  const equipeNorm = c.equipe.toLowerCase().trim();
+  const match = opcoesEquipe.find(op => op.nome.toLowerCase().includes(equipeNorm) || equipeNorm.includes(op.nome.toLowerCase()));
+  if (match) sel.value = match.id;
+}
       equipeCol.appendChild(sel);
 
       item.appendChild(info);
