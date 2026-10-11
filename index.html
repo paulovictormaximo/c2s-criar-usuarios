@@ -44,7 +44,6 @@
     .upload-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
     .upload-text strong { color: var(--blue); font-weight: 500; }
     .upload-name { margin-top: 10px; font-size: 13px; font-family: 'DM Mono', monospace; color: var(--blue); font-weight: 500; display: none; }
-
     .formato-link { font-size: 12px; color: var(--blue); text-align: center; margin-top: 10px; cursor: pointer; font-weight: 500; user-select: none; }
     .formato-seta { display: inline-block; transition: transform 0.25s ease; margin-right: 4px; }
     .formato-seta.aberto { transform: rotate(180deg); }
@@ -93,8 +92,7 @@
     .criados-table th { background: #DCFCE7; color: var(--success); font-weight: 600; padding: 7px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; position: sticky; top: 0; }
     .criados-table td { padding: 8px 12px; border-top: 1px solid #D1FAE5; color: var(--text); background: var(--success-bg); font-family: 'DM Mono', monospace; font-size: 12px; white-space: nowrap;}
     .criados-table tr td:first-child { font-family: 'DM Sans', sans-serif; font-weight: 500; }
-
-       /* TELA DE REVISÃO */
+    /* TELA DE REVISÃO */
     .revisao-header { display: grid; grid-template-columns: 1fr 110px 160px; gap: 8px; padding: 0 13px 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
     .revisao-header span { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
     .revisao-header span:nth-child(2), .revisao-header span:nth-child(3) { text-align: center; }
@@ -280,11 +278,11 @@
 </div>
 
 <script>
-  const WEBHOOK_PLANILHA = "https://n8n.vetraia.com/webhook/c2s-criar-usuarios";
-  const WEBHOOK_TEXTO    = "https://n8n.vetraia.com/webhook/c2s-interpretar-texto";
-  const WEBHOOK_PREVIEW  = "https://n8n.vetraia.com/webhook/c2s-interpretar-texto-preview";
+  const WEBHOOK_PLANILHA    = "https://n8n.vetraia.com/webhook/c2s-criar-usuarios";
+  const WEBHOOK_TEXTO       = "https://n8n.vetraia.com/webhook/c2s-interpretar-texto";
+  const WEBHOOK_PREVIEW     = "https://n8n.vetraia.com/webhook/c2s-interpretar-texto-preview";
   const WEBHOOK_CRIAR_TEXTO = "https://n8n.vetraia.com/webhook/c2s-criar-usuarios-texto";
-  const WEBHOOK_EMPRESA  = "https://n8n.vetraia.com/webhook/c2s-buscar-empresa";
+  const WEBHOOK_EMPRESA     = "https://n8n.vetraia.com/webhook/c2s-buscar-empresa";
 
   const USUARIOS = {
     "admin":     "325d8eea60b3081478a9195a828d9c4c6744756ff4c64180f28d327e7e38e2e0",
@@ -521,13 +519,14 @@
       item.className = "revisao-item";
 
       // Coluna info
-     const info = document.createElement("div");
-info.className = "revisao-info";
-info.innerHTML = `
-  <input class="revisao-nome" value="${c.nome || ''}" id="nome-${i}" style="font-weight:500; border:1px solid var(--border); border-radius:6px; padding:4px 8px; width:100%; font-size:13px; background:var(--white);">
-  <div class="revisao-email" title="${c.email || ''}">${c.email || ''}</div>
-  <div class="revisao-email">${(c.telefone || '').replace(/^55/, '')}</div>
-`;
+      const info = document.createElement("div");
+      info.className = "revisao-info";
+      info.innerHTML = `
+        <input class="revisao-nome" value="${c.nome || ''}" id="nome-${i}" style="font-weight:500; border:1px solid var(--border); border-radius:6px; padding:4px 8px; width:100%; font-size:13px; background:var(--white);">
+        <div class="revisao-email" title="${c.email || ''}">${c.email || ''}</div>
+        <div class="revisao-email">${(c.telefone || '').replace(/^55/, '')}</div>
+      `;
+
       // Coluna master
       const masterCol = document.createElement("div");
       masterCol.className = "revisao-master";
@@ -540,20 +539,26 @@ info.innerHTML = `
       const sel = document.createElement("select");
       sel.id = `equipe-${i}`;
       for (const op of opcoesEquipe) {
-  const opt = document.createElement("option");
-  opt.value = op.id;
-  opt.textContent = op.nome;
-  sel.appendChild(opt);
-}
+        const opt = document.createElement("option");
+        opt.value = op.id;
+        opt.textContent = op.nome;
+        sel.appendChild(opt);
+      }
 
-// Pré-seleciona equipe se vier do GPT
-if (c.equipe) {
-  const equipeNorm = c.equipe.toLowerCase().trim();
-  const match = opcoesEquipe.find(op => op.nome.toLowerCase().includes(equipeNorm) || equipeNorm.includes(op.nome.toLowerCase()));
-  if (match) sel.value = match.id;
-}
+      // Pré-seleciona equipe se vier do GPT
+      if (c.equipe) {
+        const equipeNorm = c.equipe.toLowerCase().trim();
+        const sorted = [...opcoesEquipe].sort((a, b) => b.nome.length - a.nome.length);
+        const match = sorted.find(op => {
+          const opNorm = op.nome.toLowerCase();
+          return opNorm === equipeNorm ||
+                 opNorm.endsWith(equipeNorm) ||
+                 opNorm.includes(equipeNorm);
+        });
+        if (match) sel.value = match.id;
+      }
+
       equipeCol.appendChild(sel);
-
       item.appendChild(info);
       item.appendChild(masterCol);
       item.appendChild(equipeCol);
@@ -620,17 +625,17 @@ if (c.equipe) {
     listaCriados.innerHTML = "";
     if (data.criados && data.criados.length > 0) {
       secaoCriados.style.display = "block";
-    const table = document.createElement("table");
-    table.className = "criados-table";
-    table.innerHTML = `<thead><tr><th>Nome</th><th>Usuário</th><th>Email</th></tr></thead>`;
-    const tbody = document.createElement("tbody");
-    for (const c of data.criados) {
-  const tr = document.createElement("tr");
-  tr.innerHTML = `<td>${c.nome || ''}</td><td>${c.username_usado || ''}</td><td>${c.email || ''}</td>`;
-  tbody.appendChild(tr);
-}
-table.appendChild(tbody);
-listaCriados.appendChild(table);
+      const table = document.createElement("table");
+      table.className = "criados-table";
+      table.innerHTML = `<thead><tr><th>Nome</th><th>Usuário</th><th>Email</th></tr></thead>`;
+      const tbody = document.createElement("tbody");
+      for (const c of data.criados) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${c.nome || ''}</td><td>${c.username_usado || ''}</td><td>${c.email || ''}</td>`;
+        tbody.appendChild(tr);
+      }
+      table.appendChild(tbody);
+      listaCriados.appendChild(table);
     } else { secaoCriados.style.display = "none"; }
     irPara("screen-relatorio");
   }
@@ -642,7 +647,7 @@ listaCriados.appendChild(table);
       linhas.push([f.nome || "", f.email || "", f.email || "", f.telefone || "", f.master || "", f.equipe || "", f.motivo || ""]);
     }
     const csv = linhas.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement("a");
     a.href = url; a.download = `falhos_${new Date().toISOString().slice(0,10)}.csv`;
